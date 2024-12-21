@@ -1,16 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-// Unity Ads
-using UnityEngine.Advertisements;
 
-// Soomla store
-#if UNITY_ANDROID || UNITY_IOS
-using Soomla;
-using Soomla.Store;
-#endif
-
-public class ShopManager : MonoBehaviour 
+public class ShopManager : MonoBehaviour
 {
     public bool clicking;
 
@@ -41,29 +33,38 @@ public class ShopManager : MonoBehaviour
 
         StartCoroutine(ResetButtonClick());
 
-#if UNITY_EDITOR
-
         int productCoin = 0;
 
         switch (product)
         {
             case 1:
                 productCoin = Configure.instance.product1Coin;
+                IAPManager.OnPurchaseSuccess = () => AddCoin(productCoin);
+                IAPManager.Instance.BuyProductID(IAPKey.PACK1_RE);
                 break;
             case 2:
-                productCoin = Configure.instance.product2Coin;
+                //productCoin = Configure.instance.product2Coin;
                 break;
             case 3:
                 productCoin = Configure.instance.product3Coin;
+                IAPManager.OnPurchaseSuccess = () => AddCoin(productCoin);
+                IAPManager.Instance.BuyProductID(IAPKey.PACK2_RE);
                 break;
             case 4:
                 productCoin = Configure.instance.product4Coin;
+                IAPManager.OnPurchaseSuccess = () => AddCoin(productCoin);
+                IAPManager.Instance.BuyProductID(IAPKey.PACK3_RE);
                 break;
             case 5:
                 productCoin = Configure.instance.product5Coin;
+                IAPManager.OnPurchaseSuccess = () => AddCoin(productCoin);
+                IAPManager.Instance.BuyProductID(IAPKey.PACK4_RE);
                 break;
         }
+    }
 
+    public void AddCoin(int productCoin)
+    {
         // plus coin
         GameData.instance.SavePlayerCoin(GameData.instance.GetPlayerCoin() + productCoin);
 
@@ -72,32 +73,6 @@ public class ShopManager : MonoBehaviour
 
         // update text label
         UpdateCoinAmountLabel();
-
-#elif UNITY_ANDROID || UNITY_IOS
-
-        // charge money then add coin
-
-        switch (product)
-        {
-            case 1:
-                StoreInventory.BuyItem("product_1");
-                break;
-            case 2:
-                StoreInventory.BuyItem("product_2");
-                break;
-            case 3:
-                StoreInventory.BuyItem("product_3");
-                break;
-            case 4:
-                StoreInventory.BuyItem("product_4");
-                break;
-            case 5:
-                StoreInventory.BuyItem("product_5");
-                break;
-        }
-
-#endif
-
     }
 
     public void UpdateCoinAmountLabel()
@@ -135,11 +110,8 @@ public class ShopManager : MonoBehaviour
         clicking = true;
 
         StartCoroutine(ResetButtonClick());
-
-      
     }
 
-   
 
     public void FbLoginPlusCoin()
     {
